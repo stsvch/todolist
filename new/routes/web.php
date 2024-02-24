@@ -17,7 +17,16 @@ use Illuminate\Support\Facades\Route;
     return view('welcome');
 });*/
 
-Route::get('/', function(){
-    return view('home');
-})
+Route::get('/',[\App\Http\Controllers\MainController::class, 'home'])->name('home');
+
+Route::get('/about',[\App\Http\Controllers\MainController::class, 'about'])->name('welcome');
+
+Route::get('/review', [\App\Http\Controllers\MainController::class, 'review'])->name('review');
+
+Route::get('/authorization', [\App\Http\Controllers\MainController::class, 'authorization'])->name('authorization');
+
+Route::post('/review', [\App\Http\Controllers\MainController::class, 'review_check'])->name('review_check');
+
+
+
 ?>
