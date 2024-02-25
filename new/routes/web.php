@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MainController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,16 +18,19 @@ use Illuminate\Support\Facades\Route;
     return view('welcome');
 });*/
 
-Route::get('/',[\App\Http\Controllers\MainController::class, 'home'])->name('home');
+Route::get('/',[MainController::class, 'home'])->name('home');
 
-Route::get('/about',[\App\Http\Controllers\MainController::class, 'about'])->name('welcome');
+Route::post('/',[MainController::class, 'signin'])->name('signin');
 
-Route::get('/review', [\App\Http\Controllers\MainController::class, 'review'])->name('review');
+Route::get('/review', [MainController::class, 'review'])->name('review');
 
-Route::get('/authorization', [\App\Http\Controllers\MainController::class, 'authorization'])->name('authorization');
+Route::get('/authorization', [MainController::class, 'authorization'])->name('authorization');
 
-Route::post('/review', [\App\Http\Controllers\MainController::class, 'review_check'])->name('review_check');
+Route::post('/authorization', [MainController::class, 'authorization_add'])->name('authorization_add');
 
+Route::post('/review', [MainController::class, 'review_check'])->name('review_check');
+
+Route::get('/dashboard', [MainController::class, 'dashboard'])->name('dashboard');
 
 
 ?>
