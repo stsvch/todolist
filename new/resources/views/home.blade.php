@@ -9,9 +9,9 @@
     <title>Home</title>
 </head>
 <body>
-@if(session('error'))
-    <p>{{ session('error') }}</p>
-@endif
+    @if(session('error'))
+        <p>{{ session('error') }}</p>
+    @endif
     <div class="container">
         <div class="form-block">
             <form action="{{route('signin')}}" method="post">
