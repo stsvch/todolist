@@ -32,5 +32,5 @@ Route::post('/review', [MainController::class, 'review_check'])->name('review_ch
 
 Route::get('/dashboard', [MainController::class, 'dashboard'])->name('dashboard');
 
-
+Route::get('/profile', [MainController::class, 'profile'])->name('profile');
 ?>

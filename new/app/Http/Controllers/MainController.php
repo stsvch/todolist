@@ -42,7 +42,13 @@ class MainController extends Controller
             'title'=>"required",
             'date'=>'required|max:100'
         ]);
-        $data = $request->all();
+        $user = Session::get('user');
+        $data = ([
+            'title'=>$request->input('title'),
+            'date'=>$request->input('date'),
+            'userId'=>$user->id
+            ]);
+            //$request->all();
         to_do_list::create($data);
     }
 
@@ -70,5 +76,9 @@ class MainController extends Controller
         } else {
             return redirect()->route('home');
         }
+    }
+    public function profile()
+    {
+        return view('profile');
     }
 }

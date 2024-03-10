@@ -18,6 +18,7 @@ class CreateToDoListsTable extends Migration
             $table->timestamps();
             $table->string('title');
             $table->date('date');
+            $table->bigInteger('userId');
         });
     }
 
