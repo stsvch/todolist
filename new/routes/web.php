@@ -33,4 +33,8 @@ Route::post('/review', [MainController::class, 'review_check'])->name('review_ch
 Route::get('/dashboard', [MainController::class, 'dashboard'])->name('dashboard');
 
 Route::get('/profile', [MainController::class, 'profile'])->name('profile');
+Route::get('/home', [MainController::class, 'logout'])->name('logout');
+
+Route::post('profile/{listid}', [MainController::class, 'delete']);
+
 ?>

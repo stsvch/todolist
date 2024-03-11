@@ -1,17 +1,5 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-    <title>Home</title>
-</head>
-<body>
-    @if(session('error'))
-        <p>{{ session('error') }}</p>
-    @endif
+@extends('layouts.layout')
+@section('content')
     <div class="container">
         <div class="form-block">
             <form action="{{route('signin')}}" method="post">
@@ -19,7 +7,7 @@
                 <div class="frm">
                     <h1>Login</h1>
                     <div class="inpt">
-                        <input type="text" class="name" id="name" name ="name" placeholder="name">
+                        <input type="text" class="form-control" id="name" name ="name" placeholder="Name">
                     </div>
                     <div class="inpt">
                         <input type="password" class="form-control" id="password" name="password" placeholder="Password">
@@ -30,8 +18,12 @@
         </div>
         <form action="{{route('authorization')}}" method="get">
             @csrf
-            <button class="btn btn-link rounded-pill px-3" type="submit">Create an account</button>
+            <button class="btn-create" type="submit">Create an account</button>
         </form>
+        @if(session('error'))
+            <div class="alert alert-danger" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
     </div>
-</body>
-</html>
+@endsection

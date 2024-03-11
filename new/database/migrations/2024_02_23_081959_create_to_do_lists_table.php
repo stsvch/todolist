@@ -14,7 +14,7 @@ class CreateToDoListsTable extends Migration
     public function up()
     {
         Schema::create('to_do_lists', function (Blueprint $table) {
-            $table->id();
+            $table->id()->unsigned()->autoIncrement();
             $table->timestamps();
             $table->string('title');
             $table->date('date');

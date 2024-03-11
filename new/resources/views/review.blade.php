@@ -1,3 +1,5 @@
+@extends('layouts.layout')
+@section('content')
 <div class="center">
     <form method="post" action="{{route('review_check')}}">
         @csrf
@@ -14,4 +16,5 @@
         <button class="btn btn-primary w-100 py-2" type="submit">Add</button>
     </form>
 </div>
+@endsection
 

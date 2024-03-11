@@ -16,7 +16,12 @@ class MainController extends Controller
 
     public function review()
     {
-        return view('review');
+        $user = Session::get('user');
+        if ($user) {
+            return view('review');
+        } else {
+            return redirect()->route('home')->with('error', 'Authorize');
+        }
     }
 
     public function authorization()
@@ -46,10 +51,11 @@ class MainController extends Controller
         $data = ([
             'title'=>$request->input('title'),
             'date'=>$request->input('date'),
-            'userId'=>$user->id
+            'userId'=>$user['id']
             ]);
-            //$request->all();
         to_do_list::create($data);
+        $list = to_do_list::find(to_do_list::findOrFail($user['id'],'userId'));
+        return view('profile', ['list' => $list]);
     }
 
     public function signin(Request $request)
@@ -61,11 +67,11 @@ class MainController extends Controller
 
         if ($user) {
             Session::put('user', $user);
-            return redirect()->route('dashboard');
+            $list = to_do_list::find(to_do_list::findOrFail($user['id'],'userId'));
+            return view('profile', ['list' => $list]);
         } else {
-            return redirect()->route('home')->with('error', 'Incorrect data');
+            return redirect()->route('home')->with('error', 'Authorize');
         }
-
     }
 
     public function dashboard()
@@ -79,6 +85,27 @@ class MainController extends Controller
     }
     public function profile()
     {
-        return view('profile');
+        $user = Session::get('user');
+        if ($user) {
+            $list = to_do_list::find(to_do_list::findOrFail($user['id'],'userId'));
+            return view('profile', ['list' => $list]);
+        } else {
+            return redirect()->route('home')->with('error', 'Authorize');
+        }
+    }
+
+    public function logout()
+    {
+        Session::forget('user');
+        return view('home');
+    }
+
+    public function delete($listid)
+    {
+        $list = to_do_list::where('id', $listid);
+        $list->delete();
+        $user = Session::get('user');
+        $list = to_do_list::find(to_do_list::findOrFail($user['id'],'userId'));
+        return view('profile', ['list' => $list]);
     }
 }
