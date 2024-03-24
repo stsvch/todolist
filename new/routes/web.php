@@ -37,4 +37,6 @@ Route::get('/home', [MainController::class, 'logout'])->name('logout');
 
 Route::post('profile/{listid}', [MainController::class, 'delete']);
 
+Route::get('/calendar/{date}', [MainController::class, 'show'])->name('calendar');
+
 ?>

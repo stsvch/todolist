@@ -3,13 +3,13 @@
 <div class="center">
     <form method="post" action="{{route('review_check')}}">
         @csrf
-        <h1 class="h3 mb-3 fw-normal">Add</h1>
+        <h1 class="h3 mb-3 fw-normal text-center">Add task</h1>
 
-        <div class="form-floating">
+        <div class="form-floating task">
             <input type="date" class="form-control" id="date" name="date" placeholder="Date">
             <label for="date">Date</label>
         </div>
-        <div class="form-floating">
+        <div class="form-floating task">
             <input type="text" class="form-control" id="title" name="title" placeholder="ToDo">
             <label for="title">To do</label>
         </div>

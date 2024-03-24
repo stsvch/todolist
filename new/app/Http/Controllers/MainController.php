@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\admin;
 use App\Models\to_do_list;
 use App\Models\user;
 use Illuminate\Http\Request;
@@ -67,10 +68,22 @@ class MainController extends Controller
 
         if ($user) {
             Session::put('user', $user);
-            $list = to_do_list::find(to_do_list::findOrFail($user['id'],'userId'));
-            return view('profile', ['list' => $list]);
+            $list = to_do_list::where('userId', $user['id'])->get();
+            if($list){
+                return view('profile', ['list' => $list]);
+            }else{
+                return view('profile', ['list' => []]);
+            }
         } else {
-            return redirect()->route('home')->with('error', 'Authorize');
+            $admin = admin::where('name', $credentials['name'])
+                ->where('password', $credentials['password'])
+                ->first();
+            if($admin) {
+                Session::put('admin', $admin);
+                return redirect()->route('home');
+            }else{
+                return redirect()->route('home')->with('error', 'Authorize');
+            }
         }
     }
 
@@ -87,8 +100,13 @@ class MainController extends Controller
     {
         $user = Session::get('user');
         if ($user) {
-            $list = to_do_list::find(to_do_list::findOrFail($user['id'],'userId'));
-            return view('profile', ['list' => $list]);
+            $list = to_do_list::where('userId', $user['id'])->get();
+            if($list){
+                return view('profile', ['list' => $list]);
+            }else{
+                return view('profile', ['list' => []]);
+            }
+
         } else {
             return redirect()->route('home')->with('error', 'Authorize');
         }
@@ -107,5 +125,24 @@ class MainController extends Controller
         $user = Session::get('user');
         $list = to_do_list::find(to_do_list::findOrFail($user['id'],'userId'));
         return view('profile', ['list' => $list]);
+    }
+
+    public function show($date)
+    {
+        $user = Session::get('user');
+        if($user) {
+            if ($date === 'all') {
+                $list = to_do_list::where('userId', $user['id'])
+                    ->get();
+            } else {
+                $list = to_do_list::where('date', $date)
+                    ->where('userId', $user['id'])
+                    ->get();
+            }
+        }else{
+            $admin = Session::get('admin');
+            $list = to_do_list::all();
+        }
+        return view('calendar',['list'=>$list, 'date'=>$date]);
     }
 }
