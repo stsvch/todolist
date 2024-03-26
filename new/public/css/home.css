@@ -64,4 +64,8 @@ button{
     flex-direction: column;
 }
 
+.txt-area{
+    justify-content: center;
+    width: 100%;
+}
 

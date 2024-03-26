@@ -20,23 +20,36 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/',[MainController::class, 'home'])->name('home');
 
-Route::post('/',[MainController::class, 'signin'])->name('signin');
-
-Route::get('/review', [MainController::class, 'review'])->name('review');
-
-Route::get('/authorization', [MainController::class, 'authorization'])->name('authorization');
-
-Route::post('/authorization', [MainController::class, 'authorization_add'])->name('authorization_add');
-
-Route::post('/review', [MainController::class, 'review_check'])->name('review_check');
-
-Route::get('/dashboard', [MainController::class, 'dashboard'])->name('dashboard');
+Route::get('/authorization',[MainController::class, 'authorization'])->name('authorization');
 
 Route::get('/profile', [MainController::class, 'profile'])->name('profile');
-Route::get('/home', [MainController::class, 'logout'])->name('logout');
 
-Route::post('profile/{listid}', [MainController::class, 'delete']);
+Route::post('/profile_add', [MainController::class, 'profile_add'])->name('profile_add');
 
-Route::get('/calendar/{date}', [MainController::class, 'show'])->name('calendar');
+Route::post('/sign_in',[MainController::class, 'sign_in'])->name('sign_in');
 
+Route::get('/logout', [MainController::class, 'logout'])->name('logout');
+
+Route::get('/logout_admin', [MainController::class, 'logout_admin'])->name('logout_admin');
+
+Route::post('/add_task', [MainController::class, 'add_task'])->name('add_task');
+
+Route::get('/task', [MainController::class, 'task'])->name('task');
+
+Route::get('/clndr', [MainController::class, 'clndr'])->name('clndr');
+
+
+
+
+Route::get('/calendar/{date}', [MainController::class, 'show_date_task'])->name('calendar');
+
+Route::get('/tasks', [MainController::class, 'show_all'])->name('tasks');
+
+Route::get('/users', [MainController::class, 'show_user_admin'])->name('users');
+
+Route::post('task/{listid}', [MainController::class, 'delete_task']);
+
+Route::post('user/{listid}', [MainController::class, 'delete_user']);
+
+Route::get('/users_task', [MainController::class, 'show_task_admin'])->name('users_task');
 ?>
