@@ -52,4 +52,10 @@ Route::post('task/{listid}', [MainController::class, 'delete_task']);
 Route::post('user/{listid}', [MainController::class, 'delete_user']);
 
 Route::get('/users_task', [MainController::class, 'show_task_admin'])->name('users_task');
+
+Route::get('/page1', [MainController::class, 'page1'])->name('page1');
+Route::get('/page2', [MainController::class, 'page2'])->name('page2');
+Route::get('/page3', [MainController::class, 'page3'])->name('page3');
+Route::get('/page4', [MainController::class, 'page4'])->name('page4');
+Route::get('/page5', [MainController::class, 'page5'])->name('page5');
 ?>

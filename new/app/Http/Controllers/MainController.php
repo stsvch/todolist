@@ -5,21 +5,31 @@ namespace App\Http\Controllers;
 use App\Models\admin;
 use App\Models\to_do_list;
 use App\Models\user;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Session;
 
-class MainController extends Controller
+class MainController
 {
     public function home()
     {
-        if(Session::get('user')) {
+        if(request()->hasCookie('user')) {
+            session(['user' => request()->cookie('user')]);
+        }else{
+            session()->forget('user');
+        }
+        if(session()->has('user')) {
             return $this->show_all();
-        } else if(Session::get('admin')){
+        } elseif(session()->has('admin')) {
             return $this->show_user_admin();
         } else {
-            return view('authorization')->with('error', 'Authorize');
+            return view('authorization', ['error' => 'Authorize']);
         }
     }
+
 
     public function authorization()
     {
@@ -34,40 +44,50 @@ class MainController extends Controller
     public function sign_in(Request $request)
     {
         $credentials = $request->only('name', 'password');
-        $user = user::where('name', $credentials['name'])
+        $remember = $request->has('remember');
+
+        $user = User::where('name', $credentials['name'])
             ->where('password', $credentials['password'])
             ->first();
 
         if ($user) {
-            Session::put('user', $user);
-            $list = to_do_list::where('userId', $user['id'])->get();
-            if($list){
-                return redirect()->route('home');
-            }else{
-                return redirect()->route('home');
+            session(['user' => $user->id]);
+            if($remember) {
+                $response = new RedirectResponse(route('home'));
+                $response->withCookie(cookie('user', $user->id, 30 * 24 * 60));
+                return $response;
             }
+            return $this->show_all();
         } else {
-            $admin = admin::where('name', $credentials['name'])
+            $admin = Admin::where('name', $credentials['name'])
                 ->where('password', $credentials['password'])
                 ->first();
             if($admin) {
-                Session::put('admin', $admin);
-                return redirect()->route('home');
-            }else{
-                return view('authorization')->with('error', 'Authorize');
+                session(['admin' => $admin->id]);
+                if($remember) {
+                    $response = new RedirectResponse(route('home'));
+                    $response->withCookie(cookie('admin', $admin->id, 30 * 24 * 60));
+                    return $response;
+                }
+                return $this->show_user_admin();
+            } else {
+                return view('authorization', ['error' => 'Authorize']);
             }
         }
     }
 
     public function logout()
     {
-        Session::forget('user');
+        session()->forget('user');
+        setcookie('user', "", time() - 3600, "/");
+        session()->flush();
         return view('authorization');
     }
 
     public function logout_admin()
     {
-        Session::forget('admin');
+        session()->forget('admin');
+        setcookie('admin', "", time() - 3600, "/");
         return view('authorization');
     }
 
@@ -89,22 +109,20 @@ class MainController extends Controller
             'title'=>"required",
             'date'=>'required|max:100'
         ]);
-        $user = Session::get('user');
+        $user = session()->get('user');
         $data = ([
             'title'=>$request->input('title'),
             'date'=>$request->input('date'),
             'text'=>$request->input('text'),
-            'userId'=>$user['id']
+            'userId'=>$user
         ]);
         to_do_list::create($data);
-        $list = to_do_list::find(to_do_list::findOrFail($user['id'],'userId'));
-       // return view('profile', ['list' => $list]);
+        return $this->show_all();
     }
 
     public function task()
     {
-        $user = Session::get('user');
-        if ($user) {
+        if (session()->has('user')) {
             return view('review');
         } else {
             return view('authorization')->with('error', 'Authorize');
@@ -113,9 +131,9 @@ class MainController extends Controller
 
     public function clndr()
     {
-        $user = Session::get('user');
-        if ($user) {
-            $list = to_do_list::where('userId', $user['id'])->get();
+        if (session()->has('user')) {
+            $user = session()->get('user');
+            $list = to_do_list::where('userId', $user)->get();
             if($list){
                 return view('calendar', ['list' => $list]);
             }else{
@@ -123,16 +141,16 @@ class MainController extends Controller
             }
 
         } else {
-            return redirect()->route('authorization')->with('error', 'Authorize');
+            return view('authorization')->with('error', 'Authorize');
         }
     }
 
     public function show_date_task($date)
     {
-        $user = Session::get('user');
-        if($user) {
+        if(session()->has('user')) {
+            $user = session()->get('user');
             $list = to_do_list::where('date', $date)
-                ->where('userId', $user['id'])
+                ->where('userId', $user)
                 ->get();
             return view('home',['list'=>$list, 'date'=>$date, 'data' =>'task']);
         }else{
@@ -142,8 +160,7 @@ class MainController extends Controller
 
     public function show_task_admin()
     {
-        $admin = Session::get('admin');
-        if($admin){
+        if((session()->has('admin'))){
             $list = to_do_list::all();
             return view('home',['list'=>$list, 'date'=>'All task', 'data' =>'task']);
         }else{
@@ -153,8 +170,7 @@ class MainController extends Controller
 
     public function show_user_admin()
     {
-        $admin = Session::get('admin');
-        if($admin){
+        if(session()->has('admin')){
             $list = user::all();
             return view('home',['list'=>$list, 'date'=>'All task', 'data' =>'user']);
         }else{
@@ -164,9 +180,9 @@ class MainController extends Controller
 
     public function show_all()
     {
-        $user = Session::get('user');
-        if($user) {
-            $list = to_do_list::where('userId', $user['id'])
+        if(session()->has('user')) {
+            $user = session()->get('user');
+            $list = to_do_list::where('userId', $user)
                 ->get();
             return view('home',['list'=>$list, 'date'=>'All my tasks', 'data'=>'task']);
         }else{
@@ -178,9 +194,9 @@ class MainController extends Controller
     {
         $list = to_do_list::where('id', $listid);
         $list->delete();
-        $user = Session::get('user');
-        if($user) {
-            $list = to_do_list::find(to_do_list::findOrFail($user['id'],'userId'));
+        if(session()->has('user')) {
+            $user = session()->get('user');
+            $list = to_do_list::find(to_do_list::findOrFail($user,'userId'));
             return view('home', ['list' => $list, 'date'=>'All my tasks', 'data'=>'task']);
         }else{
             $list = to_do_list::all();
@@ -194,4 +210,36 @@ class MainController extends Controller
         $list->delete();
         return $this->show_user_admin();
     }
+
+    public function show_pages(Request  $request)
+    {
+        dd($request->cookie('pages'));
+    }
+
+    public function page1()
+    {
+        return view('page1');
+    }
+
+    public function page2()
+    {
+        return view('page2');
+    }
+
+    public function page3()
+    {
+        return view('page3');
+    }
+
+    public function page4()
+    {
+        return view('page4');
+    }
+
+    public function page5()
+    {
+        return view('page5');
+    }
+
+
 }

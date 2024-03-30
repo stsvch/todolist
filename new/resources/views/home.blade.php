@@ -63,7 +63,7 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <h5 class="card-title">{{ $task->title }}</h5>
-                            @if(Session::get('admin'))
+                            @if(session()->has('admin'))
                                 @php
                                     $user = \App\Models\user::find($task->userId);
                                 @endphp

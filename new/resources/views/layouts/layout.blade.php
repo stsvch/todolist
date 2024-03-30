@@ -1,3 +1,6 @@
+@php
+    session_start();
+@endphp
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -17,7 +20,7 @@
 </head>
 <body>
         @section('header')
-            @if(Session::get('user'))
+            @if(session()->has('user'))
                 <header class="d-flex justify-content-evenly py-3">
                     <form class ="nav-form" action="{{route('task')}}" method="get">
                         @csrf
@@ -44,7 +47,8 @@
                         </button>
                     </form>
                 </header>
-            @elseif(Session::get('admin'))
+
+            @elseif(session()->has('admin'))
                 <header class="d-flex justify-content-evenly py-3">
                     <form class ="nav-form" action="{{route('users_task')}}" method="get">
                         @csrf
@@ -62,6 +66,45 @@
                         @csrf
                         <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
                             Logout
+                        </button>
+                    </form>
+                </header>
+            @else
+                <header class="d-flex justify-content-evenly py-3">
+                <form class ="nav-form" action="{{route('page1')}}" method="get">
+                    @csrf
+                    <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                        page1
+                    </button>
+                </form>
+                <form class ="nav-form" action="{{route('page2')}}" method="get">
+                    @csrf
+                    <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                        page2
+                    </button>
+                </form>
+                <form class ="nav-form" action="{{route('page3')}}" method="get">
+                    @csrf
+                    <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                        page3
+                    </button>
+                </form>
+                <form class ="nav-form" action="{{route('page4')}}" method="get">
+                    @csrf
+                    <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                        page4
+                    </button>
+                </form>
+                <form class ="nav-form" action="{{route('page5')}}" method="get">
+                    @csrf
+                    <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                        page5
+                    </button>
+                </form>
+                    <form class ="nav-form" action="{{route('authorization')}}" method="get">
+                        @csrf
+                        <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                            Sign in
                         </button>
                     </form>
                 </header>

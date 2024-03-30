@@ -12,13 +12,20 @@
                     <div class="inpt">
                         <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                     </div>
+                    <div class="inpt">
+                        <input type="checkbox" name="remember"> Remember Me
+                    </div>
+                    <div class="inpt">
                     <button class="btn-login" type="submit">login</button>
+                    </div>
                 </div>
             </form>
         </div>
         <form action="{{route('profile')}}" method="get">
             @csrf
-            <button class="btn-create" type="submit">Create an account</button>
+            <div class="inpt">
+                <button class="btn-create" type="submit">Create an account</button>
+            </div>
         </form>
         @if(session('error'))
             <div class="alert alert-danger" role="alert">
