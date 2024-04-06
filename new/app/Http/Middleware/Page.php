@@ -16,8 +16,17 @@ class Page
      */
     public function handle(Request $request, Closure $next)
     {
-        $pages = ($request->cookie('pages'));
-        $pages = $pages." ".$request->url();
-        return $next($request);
+        $response = $next($request);
+
+        // Проверяем, была ли установлена cookie с посещенными страницами
+        $visitedPages = json_decode($request->cookie('visited_pages'), true) ?? [];
+
+        // Добавляем текущий URL в массив посещенных страниц
+        $visitedPages[$request->url()] = now();
+
+        // Устанавливаем cookie с обновленным списком посещенных страниц
+        $response->cookie('visited_pages', json_encode($visitedPages));
+
+        return $response;
     }
 }

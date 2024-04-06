@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 @section('content')
 <div class="center">
-    <form method="post" action="{{route('add_task')}}">
+    <form method="post" action="{{route('tasks.store')}}">
         @csrf
         <h1 class="h3 mb-3 fw-normal text-center">Add task</h1>
 

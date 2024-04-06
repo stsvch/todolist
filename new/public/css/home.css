@@ -69,3 +69,17 @@ button{
     width: 100%;
 }
 
+.search-bar{
+    margin-top: 5%;
+    margin-bottom: 5%;
+    width:50%;
+    height: 10%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.inpt-search{
+    width: 80%;
+}
+
+

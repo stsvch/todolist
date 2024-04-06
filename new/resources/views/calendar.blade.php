@@ -15,7 +15,7 @@
                     @endforeach
                 ],
                 dayClick: function(info) {
-                    window.location.href = "{{ route('calendar', ':date') }}".replace(':date', info._d.getFullYear()+'-'+(info._d.getMonth()+1)+'-'+info._d.getDate());
+                    window.location.href = "{{ route('tasks.show', ':date') }}".replace(':date', info._d.getFullYear()+'-'+(info._d.getMonth()+1)+'-'+info._d.getDate());
                 }
             });
         });

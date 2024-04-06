@@ -19,98 +19,76 @@
     @yield('head')
 </head>
 <body>
-        @section('header')
-            @if(session()->has('user'))
-                <header class="d-flex justify-content-evenly py-3">
-                    <form class ="nav-form" action="{{route('task')}}" method="get">
-                        @csrf
-                        <button class="nav-link active" type="submit"  aria-selected="true">
-                            New todo
-                        </button>
-                    </form>
-                    <form class ="nav-form" action="{{route('clndr')}}" method="get">
-                        @csrf
-                        <button class="nav-link" type="submit" aria-selected="true">
-                            Calendar
-                        </button>
-                    </form>
-                    <form class ="nav-form" action="{{route('tasks')}}" method="get">
-                        @csrf
-                        <button class="nav-link" type="submit" aria-selected="true">
-                            List
-                        </button>
-                    </form>
-                    <form class ="nav-form" action="{{route('logout')}}" method="get">
-                        @csrf
-                        <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
-                            Logout
-                        </button>
-                    </form>
-                </header>
-
-            @elseif(session()->has('admin'))
-                <header class="d-flex justify-content-evenly py-3">
-                    <form class ="nav-form" action="{{route('users_task')}}" method="get">
-                        @csrf
-                        <button class="nav-link" type="submit" aria-selected="true">
-                            List
-                        </button>
-                    </form>
-                    <form class ="nav-form" action="{{route('users')}}" method="get">
-                        @csrf
-                        <button class="nav-link" type="submit" aria-selected="true">
-                            Users
-                        </button>
-                    </form>
-                    <form class ="nav-form" action="{{route('logout_admin')}}" method="get">
-                        @csrf
-                        <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
-                            Logout
-                        </button>
-                    </form>
-                </header>
-            @else
-                <header class="d-flex justify-content-evenly py-3">
-                <form class ="nav-form" action="{{route('page1')}}" method="get">
-                    @csrf
-                    <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
-                        page1
-                    </button>
-                </form>
-                <form class ="nav-form" action="{{route('page2')}}" method="get">
-                    @csrf
-                    <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
-                        page2
-                    </button>
-                </form>
-                <form class ="nav-form" action="{{route('page3')}}" method="get">
-                    @csrf
-                    <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
-                        page3
-                    </button>
-                </form>
-                <form class ="nav-form" action="{{route('page4')}}" method="get">
-                    @csrf
-                    <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
-                        page4
-                    </button>
-                </form>
-                <form class ="nav-form" action="{{route('page5')}}" method="get">
-                    @csrf
-                    <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
-                        page5
-                    </button>
-                </form>
-                    <form class ="nav-form" action="{{route('authorization')}}" method="get">
-                        @csrf
-                        <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
-                            Sign in
-                        </button>
-                    </form>
-                </header>
-            @endif
-        @show
-    @section('content')
-    @show
+@section('header')
+    @if(session()->has('user'))
+        <header class="d-flex justify-content-evenly py-3">
+            <form class ="nav-form" action="{{route('tasks.create')}}" method="get">
+                @csrf
+                <button class="nav-link active" type="submit"  aria-selected="true">
+                    New todo
+                </button>
+            </form>
+            <form class ="nav-form" action="{{route('clndr')}}" method="get">
+                @csrf
+                <button class="nav-link" type="submit" aria-selected="true">
+                    Calendar
+                </button>
+            </form>
+            <form class ="nav-form" action="{{route('tasks')}}" method="get">
+                @csrf
+                <button class="nav-link" type="submit" aria-selected="true">
+                    List
+                </button>
+            </form>
+            <form class ="nav-form" action="{{route('logout')}}" method="get">
+                @csrf
+                <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                    Logout
+                </button>
+            </form>
+        </header>
+    @else
+        <header class="d-flex justify-content-evenly py-3">
+            <form class ="nav-form" action="{{route('page1')}}" method="get">
+                @csrf
+                <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                    page1
+                </button>
+            </form>
+            <form class ="nav-form" action="{{route('page2')}}" method="get">
+                @csrf
+                <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                    page2
+                </button>
+            </form>
+            <form class ="nav-form" action="{{route('page3')}}" method="get">
+                @csrf
+                <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                    page3
+                </button>
+            </form>
+            <form class ="nav-form" action="{{route('page4')}}" method="get">
+                @csrf
+                <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                    page4
+                </button>
+            </form>
+            <form class ="nav-form" action="{{route('page5')}}" method="get">
+                @csrf
+                <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                    page5
+                </button>
+            </form>
+            <form class ="nav-form" action="{{route('authorization')}}" method="get">
+                @csrf
+                <button class="nav-link" data-bs-toggle="pill" type="submit"  aria-selected="true">
+                    Sign in
+                </button>
+            </form>
+        </header>
+    @endif
+@show
+@section('content')
+@show
 </body>
 </html>
