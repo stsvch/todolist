@@ -53,12 +53,20 @@ Route::get('/users_task', [MainController::class, 'show_task_admin'])->name('use
 */
 
 Route::get('/clndr', [MainController::class, 'clndr'])->name('clndr');
-
 Route::get('/tasks', [TaskController::class,'index'])->name('tasks');
 Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
 Route::post('/tasks', [TaskController::class,'store'])->name('tasks.store');
 Route::post('/tasks/{task}', [TaskController::class, 'delete'])->name('tasks.delete');
 Route::get('/tasks/{date}',[TaskController::class, 'show'])->name('tasks.show');
+Route::get('/tasks/find/list',[TaskController::class, 'find'])->name('tasks.find');
+
+
+Route::get('/authorization/reset',[MainController::class,'reset'])->name('authorization.reset');
+Route::post('/authorization/reset/email', [MainController::class, 'sendLink'])->name('authorization.reset.email');
+
+Route::get('authorization/reset/{token}', [MainController::class, 'showResetPasswordForm'])->name('password.reset.form');
+Route::post('password/{token}', [MainController::class, 'updatePassword'])->name('password.reset');
+
 
 
 Route::get('/page1', [MainController::class, 'page1'])->name('page1');

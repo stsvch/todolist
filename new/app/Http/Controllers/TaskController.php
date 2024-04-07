@@ -63,8 +63,19 @@ class TaskController extends Controller
                 ->get();
             return view('task',['list'=>$list, 'data' =>'task'.$date]);
         }else{
-            return view('authorization')->with('error', 'Authorize');
+            return view('authorization')->with('error','Authorize');
         }
     }
 
+    public function find(Request $request)
+    {
+        $user = session()->get('user');
+        $search = $request->input('find');
+        $list = to_do_list::where('userId', $user)
+            ->get();
+        $tasks = collect($list)->filter(function ($task) use ($search) {
+            return stripos($task['title'], $search) !== false;
+        });
+        return view('task', ['list' => $tasks, 'data'=>'task111']);
+    }
 }

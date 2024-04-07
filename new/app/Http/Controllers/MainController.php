@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Email;
 use App\Models\admin;
 use App\Models\to_do_list;
 use App\Models\user;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Session;
@@ -24,7 +28,7 @@ class MainController
         if(session()->has('user')) {
             return route('tasks');
         } else {
-            return view('authorization', ['error' => 'Authorize']);
+            return view('authorization');
         }
     }
 
@@ -41,11 +45,11 @@ class MainController
 
     public function sign_in(Request $request)
     {
-        $credentials = $request->only('name', 'password');
+        $arr = $request->only('name', 'password');
         $remember = $request->has('remember');
 
-        $user = User::where('name', $credentials['name'])
-            ->where('password', $credentials['password'])
+        $user = User::where('name', $arr['name'])
+            ->where('password', $arr['password'])
             ->first();
 
         if ($user) {
@@ -57,8 +61,8 @@ class MainController
             }
             return redirect()->route('tasks');
         } else {
-            $admin = Admin::where('name', $credentials['name'])
-                ->where('password', $credentials['password'])
+            $admin = Admin::where('name', $arr['name'])
+                ->where('password', $arr['password'])
                 ->first();
             if($admin) {
                 session(['admin' => $admin->id]);
@@ -118,9 +122,8 @@ class MainController
 
     public function index(Request $request)
     {
-        // Получаем список посещенных страниц из cookie
-        $visitedPages = json_decode($request->cookie('visited_pages'), true) ?? [];
-
+        $visitedPages = $request->cookie('pages');
+        $visitedPages = explode(",", $visitedPages);
         return view('page5', ['visitedPages' => $visitedPages]);
     }
 
@@ -144,5 +147,50 @@ class MainController
         return view('page4');
     }
 
+    public function reset()
+    {
+        return view('reset');
+    }
 
+    public function sendLink(Request $request)
+    {
+        $user = User::where('email', $request->input('email'))->first();
+        if($user)
+        {
+            $token = Str::random(64);
+            $user->password_reset_token = $token;
+            $user->save();
+            try {
+                Mail::to($request->input('email'))->send(new Email($user));
+                return view('authorization')->with('status', 'Send');
+            } catch (\Exception $e) {
+                return view('authorization')->with('error', $e->getMessage());
+            }
+        }
+        else{
+            return view('authorization')->with('error', 'Email not found');
+        }
+    }
+
+    public function showResetPasswordForm($token)
+    {
+        return view('password',['token'=>$token]);
+    }
+
+    public function updatePassword(Request $request, $token)
+    {
+        $validatedData = $request->validate([
+            'password' => 'required|string',
+        ]);
+        $user = User::where('password_reset_token', $token)->first();
+
+        if ($user) {
+            $user->password = $validatedData['password'];
+            $user->password_reset_token = null;
+            $user->save();
+            return view('authorization')->with('status', 'Password updated. Please log in.');
+        } else {
+            return view('authorization')->with('error', 'Invalid or expired token.');
+        }
+    }
 }

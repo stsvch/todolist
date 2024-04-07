@@ -2,8 +2,8 @@
 @section('content')
     <div class="content-list">
         <div class="search-bar">
-            <form action="" method="GET">
-                <input  class="inpt-search" type="text" name="query" placeholder="Search" value="{{ request()->input('query') }}">
+            <form action="{{route('tasks.find')}}" method="get">
+                <input class="inpt-search" type="text" id="find" name="find" placeholder="Search" value="{{ request()->input('find') }}">
                 <button type="submit">Search</button>
             </form>
         </div>

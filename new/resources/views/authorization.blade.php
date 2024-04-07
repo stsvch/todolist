@@ -27,9 +27,20 @@
                 <button class="btn-create" type="submit">Create an account</button>
             </div>
         </form>
-        @if(session('error'))
+        <form action="{{route('authorization.reset')}}" method="get">
+            @csrf
+            <div class="inpt">
+                <a href="/authorization/reset" class="text-center">Forgot password</a>
+            </div>
+        </form>
+        @if((isset($error)))
             <div class="alert alert-danger" role="alert">
-                {{ session('error') }}
+                {{$error}}
+            </div>
+        @endif
+        @if((isset($status)))
+            <div class="alert alert-success" role="alert">
+                {{$status}}
             </div>
         @endif
     </div>
