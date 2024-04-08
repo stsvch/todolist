@@ -16,16 +16,17 @@ class Page
      */
     public function handle(Request $request, Closure $next)
     {
-        $response = $next($request);
-        $visitedPages = $response->cookie('pages');
-        if($visitedPages!="")
-        {
-            $visitedPages = $visitedPages.",".$request->url();
-        }else{
-            $visitedPages = $request->url();
+        $visitedPages = $request->cookie('visited_pages', '');
+        $visitedPagesArray = $visitedPages ? explode(',', $visitedPages) : [];
+        $currentPage = $request->path();
+        if (!in_array($currentPage, $visitedPagesArray)) {
+            $visitedPagesArray[] = $currentPage;
         }
-        $response->cookie('pages', $visitedPages);
+        $visitedPagesString = implode(',', $visitedPagesArray);
 
+        $response = $next($request);
+        $response->withCookie(cookie('visited_pages', $visitedPagesString,0));
         return $response;
     }
 }
+

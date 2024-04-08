@@ -26,7 +26,7 @@ class MainController
             session()->forget('user');
         }
         if(session()->has('user')) {
-            return route('tasks');
+            return redirect()->route('tasks');
         } else {
             return view('authorization');
         }
@@ -122,8 +122,8 @@ class MainController
 
     public function index(Request $request)
     {
-        $visitedPages = $request->cookie('pages');
-        $visitedPages = explode(",", $visitedPages);
+        $visitedPages = explode(',', request()->cookie('visited_pages', ''));
+
         return view('page5', ['visitedPages' => $visitedPages]);
     }
 
@@ -185,12 +185,31 @@ class MainController
         $user = User::where('password_reset_token', $token)->first();
 
         if ($user) {
-            $user->password = $validatedData['password'];
-            $user->password_reset_token = null;
-            $user->save();
-            return view('authorization')->with('status', 'Password updated. Please log in.');
+            if($validatedData['password']== $user->password)
+            {
+                return view('authorization')->with('error', 'The password must not match the previous one');
+            }else {
+                $user->password = $validatedData['password'];
+                $user->password_reset_token = null;
+                $user->save();
+                return view('authorization')->with('status', 'Password updated. Please log in.');
+            }
+
         } else {
             return view('authorization')->with('error', 'Invalid or expired token.');
+        }
+    }
+
+    public function sendMsg()
+    {
+        $users = User::all();
+        $message = "massage";
+
+        foreach ($users as $user) {
+            Mail::raw($message, function ($mail) use ($user) {
+                $mail->to($user->email);
+                $mail->subject('New massage');
+            });
         }
     }
 }
